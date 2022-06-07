@@ -171,6 +171,7 @@ var addEnable = false; // tracks if user has pressed square
 
 squareListener.squareListener((buttonState) => {
     addEnable = true;
+    document.getElementById("buttonStat").innerHTML = "True";
 });
 
 xListener.xListener((buttonState) =>{
@@ -206,6 +207,7 @@ xListener.xListener((buttonState) =>{
             document.body.style.background = "grey"; 
         }
         addEnable = false; // prompt user to press square again to increment
+        document.getElementById("buttonStat").innerHTML = "False";
     }
 });
 
@@ -217,6 +219,7 @@ resetListener.resetListener((buttonState) => {
         num = 0;
         count.innerHTML = num;
         addEnable = false; // reset enable states
+        document.getElementById("buttonStat").innerHTML = "False";
         if (num == 0){
             document.body.style.background = "white"; // resets color to default
         }

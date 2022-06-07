@@ -5,15 +5,23 @@
         <title>Button Count</title>
         <script type="text/javascript" src="gamepad.js"></script>
         <style>
-            .countLine { margin-left: 2%;}
-            .countLine, p{ display:inline; vertical-align: middle;}
+            .stat { margin-left: 2%;}
+            .stat, p{ display:inline; vertical-align: top;}
         </style>
     </head>
 
     <body>
         
-        <div>
-            <h2 id="countLine">Count: <p id="count", value="0">0</p></h2>
+        <div id="stat">
+            <h2 id="countLine">
+                Count: 
+                <p id="count">0</p>
+            </h2>
+
+            <h3 id="enable">
+                Square enabled: 
+                <p id="buttonStat">False</p>
+            </h3>
         </div>
         <br>
         
@@ -22,5 +30,4 @@
     </body>
 
 </html>
-
 
