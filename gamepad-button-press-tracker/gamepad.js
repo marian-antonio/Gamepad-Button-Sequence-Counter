@@ -203,6 +203,7 @@ xListener.xListener((buttonState) =>{
             document.body.style.background = "#FFE000";
         } else if (num === 54){
             document.body.style.background = "#5DE23C";
+            beep();
         } else{ // muted color for others
             document.body.style.background = "grey"; 
         }
@@ -225,3 +226,9 @@ resetListener.resetListener((buttonState) => {
         }
     }
 });
+
+function beep() {
+    var audio = new Audio(
+        "609336__kenneth-cooney__completed.wav");
+    audio.play();
+}
