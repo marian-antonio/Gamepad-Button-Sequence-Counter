@@ -216,6 +216,7 @@ resetListener.resetListener((buttonState) => {
     if(buttonState){
         num = 0;
         count.innerHTML = num;
+        addEnable = false; // reset enable states
         if (num == 0){
             document.body.style.background = "white"; // resets color to default
         }
