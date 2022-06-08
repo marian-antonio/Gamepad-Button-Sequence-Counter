@@ -4,29 +4,134 @@
         <meta charset="utf-8">
         <title>Button Count</title>
         <script type="text/javascript" src="gamepad.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <style>
-            .stat { margin-left: 2%;}
-            .stat, p{ display:inline; vertical-align: top;}
+            body { 
+                color: white;
+                background-color:  #272c2c;
+                font-family: 'Roboto', sans-serif;
+                text-align: center;
+            }
+            .gamepad-container{
+                border-bottom: 1px solid grey; 
+                padding: 10px;
+            }
+            .gamepad-container h2{
+                margin-bottom: 0;
+            }
+            .gamepad-list{
+                display: inline-block;
+                text-align: left;
+                list-style-type: circle;
+                padding: 0;
+            }
+            .gamepad-list li{
+                margin: 5px 0;
+            }
+            
+            .stat-body{
+                background: #313939;
+                height: fit-content;
+                padding: 20px 0 20px;
+            }
+            .box{
+                display: block;
+                width: 200px;
+                padding: 20px;
+                margin: 20px auto;
+                border: 8px solid white;
+            }
+            .box span{
+                width: fit-content;
+                display: inline-block;
+                text-align: left;
+                line-height: 30px;
+            }
+
+            .box h1{
+                margin: 0;
+                padding-bottom: 10px;
+            }
+            .box h3{
+                margin: 0;
+            }
+            
+
+            .box p{
+                display: inline;
+                color: #acf13c;
+            }
+
+            .timer{
+                font-size: 25px;
+            }
+            .timer-controls{
+                margin: 10px;
+            }
+
+            .times-list{
+                list-style-type: circle;
+                list-style-position: inside;
+                padding-top: 20px;;
+            }
+            #times{
+                padding: 0;
+            }
+            
         </style>
     </head>
 
     <body>
         
-        <div id="stat">
-            <h2 id="countLine">
-                Count: 
-                <p id="count">0</p>
-            </h2>
-
-            <h3 id="enable">
-                Square enabled: 
-                <p id="buttonStat">False</p>
-            </h3>
+        <div class="gamepad-container" id="gamepad-container">
+            <h2 id="gamepad-header" style="display: none;">Available gamepads:</h2>
+            <p id="wait-message" class="wait-message">
+                <i class="fa fa-circle-o-notch fa-spin" style="font-size:20px"></i>  
+                <span style="font-size: 20px;">Press a button to start.</span>
+            </p>
+            
+            <ul class="gamepad-list" id="gamepad-list">
+                <h2 id="gamepad-header" style="display: none;">Available gamepads:</h2>
+            </ul>
+            
+            
         </div>
+
         <br>
-        
-        <h2>Available gamepads:</h2>
-        <h3 id="start">Press a button to start.</h3>
+
+        <div class="stat-body" id="stat-body">
+            <div class="box" id="count-box">
+                <h1>Counter</h1>
+                <span>
+                    <h3>Count: <p id="count">0</p></h3>
+                    <h3>Square enabled: <p id="buttonStat" style="color: #e46821">False</p></h3>      
+                </span>
+            </div>
+            
+            <div class="box" id="timer-box">
+                <h1>Stopwatch</h1>
+                <div class="timer" id="timer">
+                    <span id="minutes">00</span>
+                    :
+                    <span id="seconds">00</span>
+                    :
+                    <span id="milliseconds">00</span>
+                </div>
+                
+                <div class="timer-controls">
+                    <button id="button-start">Start</button>
+                    <button id="button-stop">Stop</button>
+                    <button id="button-reset">Reset</button>
+                </div>
+                <div class="times-list">
+                    <h3>Times: </h3>
+                    <ul id="times">
+                    </ul>
+                    <button id="button-clear">Clear</button>
+                </div>
+                
+            </div> 
+        </div>
     </body>
 
 </html>

@@ -30,24 +30,22 @@ function disconnecthandler(e) {
 }
 
 function addgamepad(gamepad){
+    
     controllers[gamepad.index] = gamepad;
     console.log("Adding controllers[gamepad.index]: " + gamepad.index);
-    var d = document.createElement("div");
+    var main = document.getElementById("gamepad-list");
+    var d = document.createElement("li");
     d.setAttribute("id","controller"+gamepad.index);
-    var t = document.createElement("h3");
-    t.appendChild(document.createTextNode("Gamepad #" + gamepad.index));
-    d.appendChild(t);
-
-    // initial page displays a message to prompt user entry
-    // controller button entry replaces that message with gamepad information
-    document.getElementById("start").style.display = "none";
-    document.body.appendChild(d);
+    d.appendChild(document.createTextNode("GamePad [" + gamepad.index+"]"));
+    document.getElementById("wait-message").style.display = "none";
+    document.getElementById("gamepad-header").style.display = "block";
+    main.appendChild(d);
 
     // to be used for displaying button input states later
     // rAF(updateStatus);
 }
 
-// function updateStatis(){}
+// function updateStatus(){}
 
 
 function removegamepad(gamepad) {
@@ -83,10 +81,35 @@ if (haveEvents) {
 // variable names for buttons used are based on PS4 controllers
 // regardless, this app still works for other types of console controllers
 
+/*
+    BUTTON LIST
+    0: x
+    1: circle
+    2: square
+    3: triangle
+    4: L1
+    5: R1
+    6: L2
+    7: R2
+    8: "Share"
+    9: "Options"
+    10: L3 (Left Joystick press)
+    11: R3 (Right Joystick press)
+    12: Dpad Up
+    13: Dpad Down
+    14: Dpad Left
+    15: Dpad Right
+    16: PS button
+    17: Touchpad button
+
+*/
+
 // button indices
 const x = 0;    // x=0, select button
 const square = 2;   // square=4, to challenge npc 
 const reset = 4; // L1=4, reset counter to 0
+const timerButton = 6; // L2 controls timer 
+const resetTimer = 7; // R2 resets timer 
 
 // change this number to which gamepad index you want to use
 // ideally, would have a textbox or button in the front end to pass here
@@ -96,6 +119,8 @@ const gamepadNum = 2;
 let squareEnableState = false;
 let xEnableState = false;
 let resetCountState = false;
+let timerControlState = false; 
+let resetTimerState = false;
 
 // functions to prevent throttle, allow one button press = one input
 const loop = () => {
@@ -106,6 +131,8 @@ const loop = () => {
         const squareCurrentState = ctrl.buttons[square].pressed;
         const xCurrentState = ctrl.buttons[x].pressed;
         const resetCurrentState = ctrl.buttons[reset].pressed;
+        const timerCurrentState = ctrl.buttons[timerButton].pressed;
+        const resetTimerCurrentState = ctrl.buttons[resetTimer].pressed;
 
         // for each button, check if state has changed
         // if so, update the enable state
@@ -121,6 +148,14 @@ const loop = () => {
         if(resetCountState !== resetCurrentState){
             resetCountState = resetCurrentState;
             resetListener.signal(resetCurrentState);
+        }
+        if(timerControlState !== timerCurrentState){
+            timerControlState = timerCurrentState;
+            timerListener.signal(timerCurrentState);
+        }
+        if(resetTimerState !== resetTimerCurrentState){
+            resetTimerState = resetTimerCurrentState;
+            resetTimerListener.signal(resetTimerCurrentState);
         }
     }
 
@@ -163,7 +198,28 @@ const resetListener = {
         }
     }
 }
-
+const timerListener = {
+    listeners: [],
+    timerListener(btn){
+        this.listeners.push(btn);
+    },
+    signal(state){
+        for(const btn of this.listeners){
+            btn(state);
+        }
+    }
+}
+const resetTimerListener = {
+    listeners: [],
+    resetTimerListener(btn){
+        this.listeners.push(btn);
+    },
+    signal(state){
+        for(const btn of this.listeners){
+            btn(state);
+        }
+    }
+}
 
 // configure action required by each enabled button
 // to increment count, user needs to press square first, then x adds 1 to count
@@ -172,6 +228,7 @@ var addEnable = false; // tracks if user has pressed square
 squareListener.squareListener((buttonState) => {
     addEnable = true;
     document.getElementById("buttonStat").innerHTML = "True";
+    document.getElementById("buttonStat").style.color = "#acf13c";
 });
 
 xListener.xListener((buttonState) =>{
@@ -187,28 +244,26 @@ xListener.xListener((buttonState) =>{
 
         // OPTIONAL:
         // background changes color based on current count number
-        // allows me to focus on the game and let my peripheral vision see if i'm close to my target count
-        console.log(num%10);
-        if(num === 0){ // starting color
-            document.body.style.background = "white"; 
-        } else if (num >= 55){ // my target number is 55
-            document.body.style.background = "#FF3200";
-        } else if (num % 10 === 0){ // any number divisible by 10 is highlighted
-            document.body.style.background = "#00FFFB"; 
-        } else if (num === 51){ // count down to target number
-            document.body.style.background = "#CAC499";
+        if (num >= 55){ // past target
+            color = "#000000";
+        }else if (num === 51){ // count down to target number
+            color = "#CAC499";
         } else if (num === 52){
-            document.body.style.background = "#D5CA78";
+            color = "#D5CA78";
         } else if (num === 53){
-            document.body.style.background = "#FFE000";
+            color = "#FFE000";
         } else if (num === 54){
-            document.body.style.background = "#5DE23C";
-            beep();
-        } else{ // muted color for others
-            document.body.style.background = "grey"; 
+            color = "#5DE23C";
+            beep(); 
+        } else{ 
+            color = "white"; 
         }
+
+        document.getElementById("count-box").style.borderColor = color;
+        // document.getElementById("stat-body").style.backgroundColor = color;
         addEnable = false; // prompt user to press square again to increment
         document.getElementById("buttonStat").innerHTML = "False";
+        document.getElementById("buttonStat").style.color = "#e46821";
     }
 });
 
@@ -221,14 +276,147 @@ resetListener.resetListener((buttonState) => {
         count.innerHTML = num;
         addEnable = false; // reset enable states
         document.getElementById("buttonStat").innerHTML = "False";
+        document.getElementById("buttonStat").style.color = "#e46821";
         if (num == 0){
-            document.body.style.background = "white"; // resets color to default
+            // document.getElementById("stat-body").style.borderColor = "#313939"; // resets color to default
+            document.getElementById("count-box").style.borderColor = "white";
         }
     }
 });
 
+
+
+// extra functionalities
+
+// sound effect
 function beep() {
     var audio = new Audio(
         "609336__kenneth-cooney__completed.wav");
     audio.play();
 }
+
+// window stop watch control
+window.onload = function (){
+    var startState = false;
+    var stopState = true;
+    var resetState = false;
+
+    var minutes = 00;
+    var seconds = 00;
+    var milliseconds = 00;
+
+    var appendMinutes = document.getElementById("minutes");
+    var appendSeconds = document.getElementById("seconds");
+    var appendMilliseconds = document.getElementById("milliseconds");
+
+    var buttonStart = document.getElementById('button-start');
+    var buttonStop = document.getElementById('button-stop');
+    var buttonReset = document.getElementById('button-reset');
+    var buttonClear = document.getElementById('button-clear');
+    var Interval ;
+
+    buttonStart.onclick = function(){ start(); }
+    buttonStop.onclick = function(){ stop(); }
+    buttonReset.onclick = function(){ reset(); }
+    buttonClear.onclick = function(){ clearTimeList(); }
+
+    // control timer with gamepad controller
+    timerListener.timerListener((buttonState) => {
+        if(buttonState){
+            if(!startState && stopState){
+                document.getElementById("timer").style.color = "#acf13c";
+                start();
+            } else if(startState && !stopState && !resetState){
+                document.getElementById("timer").style.color = "white";
+                stop();
+                reset();
+            }
+        }
+    });
+
+    resetTimerListener.resetTimerListener((buttonState) =>{
+        if(buttonState){
+            clearTimeList();
+        }
+    })
+
+    function start(){
+        startState = true;
+        stopState = false;
+        resetState = false; 
+
+        clearInterval(Interval);
+        Interval = setInterval(startTimer, 10);     
+    }
+    function stop(){
+        startState = false;
+        stopState = true;
+        resetState = true;
+        
+        // clear interval stops timer
+        clearInterval(Interval);
+    }
+
+    function reset() {
+        startState = false;
+        stopState = true;
+        resetState = false;
+        
+        // add time to list node
+        storeTime(appendMinutes.innerHTML, appendSeconds.innerHTML, appendMilliseconds.innerHTML);
+
+        // reset timer
+        clearInterval(Interval);
+        milliseconds = "00";
+        seconds = "00";
+        minutes = "00";
+        appendMilliseconds.innerHTML = milliseconds;
+        appendSeconds.innerHTML = seconds;
+        appendMinutes.innerHTML = minutes;
+    }
+
+    function storeTime(minutes, seconds, milliseconds){
+        var timesList = document.getElementById("times");
+        var node = document.createElement("li");
+        node.appendChild(document.createTextNode(minutes+":"+seconds+":"+milliseconds));
+        timesList.appendChild(node);
+    }
+
+    function clearTimeList(){
+        var timesList = document.getElementById("times");
+        timesList.innerHTML = '';
+    }
+    // timer functionality
+    function startTimer () {
+        milliseconds++; 
+        if(milliseconds <= 9){
+            appendMilliseconds.innerHTML = "0" + milliseconds;
+        }
+        if (milliseconds > 9){
+            appendMilliseconds.innerHTML = milliseconds;
+        } 
+        
+        if (milliseconds > 99) {
+            seconds++;
+            appendSeconds.innerHTML = "0" + seconds;
+            milliseconds = 0;
+            appendMilliseconds.innerHTML = "0" + 0;
+        }
+        
+        if (seconds > 9){
+            appendSeconds.innerHTML = seconds;
+        }
+
+        if (seconds > 59){
+            minutes++;
+            appendMinutes.innerHTML = "0" + minutes;
+            seconds = 0;
+            appendSeconds.innerHTML = "0" + 0;
+        }
+        if (minutes > 9){
+            appendMinutes.innerHTML = minutes;
+        }
+    }
+}
+
+
