@@ -1,0 +1,27 @@
+TODO:
+
+- improve UI
+-- split counter and stopwatch into separate widgets
+-- ability to toggle widgets
+-- ability to assign controls
+-- ability to add target count
+-- customizable inputs
+-- on screen controls to go along with game controller for resetting
+--- manual input/increment/decrement in case of mistakes
+-- show controls/ability to customize controls
+--- visual queue to show if 1st button is enabled
+
+
+- ability to store times in database
+-- table to display stored times
+-- column to store whether it was a successful run or not
+-- text box to enter "title" or "task" for what the timer was for
+
+
+- user log in to store times
+-- basic login/oauth
+
+- improve stopwatch functionality 
+- error/input handling
+- separate each functions to their own apps (counter vs stopwatch)
+
