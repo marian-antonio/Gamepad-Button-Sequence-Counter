@@ -1,9 +1,21 @@
 # Gamepad-Button-Sequence-Counter
 
-Used for quality of life purposes when farming Rosetta Stones in D-District Prison in Final Fantasy VIII, which requires the player to do a sequence of inputs to efficiently farm the extremely rare item. The procedure involves running from the save point to the NPC as fast as possible. Then, the player will be required to challenge the NPC to a game of Triple Triad and subsequently decline for a total of 54 times.
+## Functionality
+Application that tracks a sequence of inputs from a game controller. This uses the Gamepad API to detect controller connections and button inputs. 
 
-To make this process less tedious, this script tracks the number of times the NPC has been challenged. The script uses the Gamepad API to track controller inputs, specifically the X, Square, and L1 buttons on a PS4 controller. 
+Currently, the counter functionality counts every time Button[2] then Button[0] ("Square" and "X" buttons on a PlayStation controller, respectively) are pressed. It tracks whether the count has reached a target number (hardcoded to 54), then notifies the user with a sound effect once that target number is reached. As the count gets closer to the target number, the border color gradually changes from yellow to green as it reaches the target number. Once number is past the target, the border color stays red until the count is reset.
 
-Counter increments after making sure that the user had pressed Square before pressing X. Counter can be reset to 0 by pressing L1.
+There is also a stopwatch that can be controlled by onscreen buttons or by controller input. The timer can be started, stopped, and reset. Resetting the timer sets the time back to 00:00:00, stores the previous time in memory, and displays them on the screen. The list can also be cleared.
 
-Background color changes as the counter gets closer to 54, to allow the player to focus on the game screen and let their peripheral vision track what the counter is at. Background starts with white and changes to light blue as the counter hits values divisible by 10. Once it gets to the 50s, the background color gradually changes to green from 51 to 54, then switches to red from 55 onwardsm, signalling the player that they have reached the target number. 
+The app is completely controllable by the connected gamepad (gamepad index currently hardcoded for testing).  
+
+
+
+## Controls:
+|Playstation |Gamepad API Button Index  |Functionality  |
+|:---:|:---:|---|
+| Square | Button[2] | Enables wait state for incrementing count  |
+| X | Button[0] | Increments count, disables wait state  |
+| L1 | Button[4] | Resets count to zero  |
+| L2 | Button[6] | Starts and resets stopwatch |
+| R2 | Button[7] | Clears list of times (permanently)  |
