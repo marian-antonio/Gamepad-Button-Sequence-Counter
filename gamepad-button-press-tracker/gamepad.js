@@ -51,7 +51,8 @@ function addgamepad(gamepad){
 function removegamepad(gamepad) {
     // removes controller element from the page
     var d = document.getElementById("controller" + gamepad.index);
-    document.body.removeChild(d);
+    var main = document.getElementById("gamepad-list");
+    document.main.removeChild(d);
     delete controllers[gamepad.index];
 }
 
@@ -108,12 +109,12 @@ if (haveEvents) {
 const x = 0;    // x=0, select button
 const square = 2;   // square=4, to challenge npc 
 const reset = 4; // L1=4, reset counter to 0
-const timerButton = 6; // L2 controls timer 
-const resetTimer = 7; // R2 resets timer 
+const timerButton = 5; // L2 controls timer 
+const resetTimer = 16; // R2 resets timer 
 
 // change this number to which gamepad index you want to use
 // ideally, would have a textbox or button in the front end to pass here
-const gamepadNum = 2; 
+const gamepadNum = 0; 
 
 // button states
 let squareEnableState = false;
@@ -244,17 +245,20 @@ xListener.xListener((buttonState) =>{
 
         // OPTIONAL:
         // background changes color based on current count number
-        if (num >= 55){ // past target
+        if (num >= 56){ // past target
             color = "#000000";
-        }else if (num === 51){ // count down to target number
+        }else if (num === 52){ // count down to target number
             color = "#CAC499";
-        } else if (num === 52){
-            color = "#D5CA78";
+            beep(threeSound); 
         } else if (num === 53){
-            color = "#FFE000";
+            color = "#D5CA78";
+            beep(twoSound); 
         } else if (num === 54){
+            color = "#FFE000";
+            beep(oneSound); 
+        } else if (num === 55){
             color = "#5DE23C";
-            beep(); 
+            beep(dingSound); 
         } else{ 
             color = "white"; 
         }
@@ -289,9 +293,17 @@ resetListener.resetListener((buttonState) => {
 // extra functionalities
 
 // sound effect
-function beep() {
+var soundPath = "../Sounds/";
+var dingSound = soundPath + "609336__kenneth-cooney__completed.wav";
+var oneSound = soundPath + "1.wav";
+var twoSound = soundPath + "2.wav";
+var threeSound = soundPath + "3.wav";
+var fourSound = soundPath + "4.wav";
+var fiveSound = soundPath + "5.wav";
+
+function beep(soundName) {
     var audio = new Audio(
-        "609336__kenneth-cooney__completed.wav");
+        soundName);
     audio.play();
 }
 
@@ -336,7 +348,8 @@ window.onload = function (){
 
     resetTimerListener.resetTimerListener((buttonState) =>{
         if(buttonState){
-            clearTimeList();
+            // clearTimeList();
+            removePreviousTime();
         }
     })
 
@@ -375,17 +388,31 @@ window.onload = function (){
         appendMinutes.innerHTML = minutes;
     }
 
+    var listNum = 0; 
+
     function storeTime(minutes, seconds, milliseconds){
+        listNum++;
         var timesList = document.getElementById("times");
         var node = document.createElement("li");
-        node.appendChild(document.createTextNode(minutes+":"+seconds+":"+milliseconds));
-        timesList.appendChild(node);
+        var newTime = document.createTextNode("#"+listNum + ": "+minutes+":"+seconds+":"+milliseconds);
+        node.appendChild(newTime);
+        timesList.prepend(node);
     }
 
     function clearTimeList(){
         var timesList = document.getElementById("times");
+        listNum = 0;
         timesList.innerHTML = '';
     }
+
+    function removePreviousTime(){
+        if (listNum > 0){
+            var timesList = document.getElementById("times");
+            timesList.firstChild.remove();
+                listNum--;
+            }
+    }
+
     // timer functionality
     function startTimer () {
         milliseconds++; 
