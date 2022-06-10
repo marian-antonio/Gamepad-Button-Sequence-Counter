@@ -17,5 +17,5 @@ The app is completely controllable by the connected gamepad (gamepad index curre
 | Square | Button[2] | Enables wait state for incrementing count  |
 | X | Button[0] | Increments count, disables wait state  |
 | L1 | Button[4] | Resets count to zero  |
-| L2 | Button[6] | Starts and resets stopwatch |
-| R2 | Button[7] | Clears list of times (permanently)  |
+| R1 | Button[5] | Starts and resets stopwatch, stores previous time |
+| PS Button | Button[16] | Removes first time in the list (most recent item)  |
